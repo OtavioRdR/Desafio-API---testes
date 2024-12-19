@@ -44,5 +44,5 @@ Os seguintes cenários são cobertos pelos testes da API:
 1. **Clone o repositório:**
 
    ```bash
-   git clone https://github.com/SEU_USUARIO/desafio-api-cep.git
-   cd desafio-api-cep
+   git clone https://github.com/OtavioRdR/Desafio-API---testes
+   cd desafio
