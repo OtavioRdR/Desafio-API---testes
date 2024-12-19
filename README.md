@@ -46,3 +46,85 @@ Os seguintes cenários são cobertos pelos testes da API:
    ```bash
    git clone https://github.com/OtavioRdR/Desafio-API---testes
    cd desafio
+
+2. instale as dependências:
+
+Se você estiver usando Maven, execute o seguinte comando:
+
+
+Execute os testes:
+
+Execute o comando abaixo para rodar os testes utilizando o JUnit 5:
+
+
+Se estiver usando uma IDE como IntelliJ ou Eclipse, você pode executar os testes diretamente pela interface da IDE.
+
+Estrutura do Projeto 🗂️
+
+├── src
+│   └── test
+│       └── java
+│           └── com
+│               └── db
+│                   └── desafioApi
+│                       └── ApiDeCep.java  <-- Arquivo de testes
+└── pom.xml  <-- Arquivo de configuração do Maven
+Explicação do Código 💻
+Teste de CEP Válido
+No teste cepEValido, o código verifica se a resposta da API para um CEP válido (exemplo: 18085847) retorna com o código de status 200 OK, o CEP correto e os campos de localidade e UF não nulos.
+
+java
+Copiar código
+@Test
+public void cepEValido() {
+    String valido = "18085847";
+    Response response = RestAssured
+            .given()
+            .get("https://viacep.com.br/ws/" + valido + "/json");
+
+    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
+    String cepRetorna = response.jsonPath().getString("cep").replace("-", "");
+    assertThat(cepRetorna, is(valido));  // Verifica se o CEP retornado é igual ao solicitado
+    assertThat(response.jsonPath().getString("localidade"), is(notNullValue()));  // Verifica se a localidade está presente
+    assertThat(response.jsonPath().getString("uf"), is(notNullValue()));  // Verifica se o UF está presente
+}
+Teste de CEP Inválido
+No teste testCepInvalido, a API é chamada com um CEP inválido (00000000) e é verificado se a resposta retorna o campo "erro": "true".
+
+java
+Copiar código
+@Test
+public void testCepInvalido() {
+    String cepInvalido = "00000000";
+    Response response = RestAssured
+            .given()
+            .get("https://viacep.com.br/ws/" + cepInvalido + "/json");
+
+    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
+    assertThat(response.jsonPath().getString("erro"), is("true"));  // Verifica se o erro é "true"
+}
+Teste de Tempo de Resposta
+No teste testTempoDeResposta, o tempo de resposta da API é verificado, garantindo que ele seja inferior a 2 segundos.
+
+java
+Copiar código
+@Test
+public void testTempoDeResposta() {
+    String cepValido = "18085847";
+    Response response = RestAssured
+            .given()
+            .get("https://viacep.com.br/ws/" + cepValido + "/json");
+
+    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
+    assertThat(response.getTime(), lessThan(2000L));  // Verifica se o tempo de resposta é inferior a 2 segundos
+}
+Contribuições 🤝
+Este é um projeto open-source! Contribuições são bem-vindas. Para contribuir, siga os seguintes passos:
+
+1. Fork o repositório.
+2. Crie uma branch para suas alterações (git checkout -b feature-nova).
+3. Faça commit das suas mudanças (git commit -am 'Adicionar nova feature').
+4. Envie suas alterações para o repositório remoto (git push origin feature-nova).
+5. Abra um Pull Request para revisão.
+**Licença** 📜
+Distribuído sob a Licença MIT. Veja o arquivo LICENSE para mais informações.
