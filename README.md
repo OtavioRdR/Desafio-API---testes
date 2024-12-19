@@ -51,10 +51,14 @@ Os seguintes cenários são cobertos pelos testes da API:
 
 Se você estiver usando Maven, execute o seguinte comando:
 
+mvn clean install
+
 
 Execute os testes:
 
 Execute o comando abaixo para rodar os testes utilizando o JUnit 5:
+
+mvn test
 
 
 Se estiver usando uma IDE como IntelliJ ou Eclipse, você pode executar os testes diretamente pela interface da IDE.
@@ -70,8 +74,9 @@ Estrutura do Projeto 🗂️
 │                       └── ApiDeCep.java  <-- Arquivo de testes
 └── pom.xml  <-- Arquivo de configuração do Maven
 Explicação do Código 💻
+
 Teste de CEP Válido
-No teste cepEValido, o código verifica se a resposta da API para um CEP válido (exemplo: 18085847) retorna com o código de status 200 OK, o CEP correto e os campos de localidade e UF não nulos.
+No teste cepEValido, o código verifica se a resposta da API para um CEP válido **(exemplo: 18085847)** retorna com o código de status 200 OK, o CEP correto e os campos de localidade e UF não nulos.
 
 java
 Copiar código
@@ -103,22 +108,24 @@ public void testCepInvalido() {
     assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
     assertThat(response.jsonPath().getString("erro"), is("true"));  // Verifica se o erro é "true"
 }
-Teste de Tempo de Resposta
+## Teste de Tempo de Resposta 
 No teste testTempoDeResposta, o tempo de resposta da API é verificado, garantindo que ele seja inferior a 2 segundos.
 
-java
-Copiar código
 @Test
-public void testTempoDeResposta() {
-    String cepValido = "18085847";
+public void cepEValido() {
+    String valido = "18085847";
     Response response = RestAssured
             .given()
-            .get("https://viacep.com.br/ws/" + cepValido + "/json");
+            .get("https://viacep.com.br/ws/" + valido + "/json");
 
     assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
-    assertThat(response.getTime(), lessThan(2000L));  // Verifica se o tempo de resposta é inferior a 2 segundos
+    String cepRetorna = response.jsonPath().getString("cep").replace("-", "");
+    assertThat(cepRetorna, is(valido));  // Verifica se o CEP retornado é igual ao solicitado
+    assertThat(response.jsonPath().getString("localidade"), is(notNullValue()));  // Verifica se a localidade está presente
+    assertThat(response.jsonPath().getString("uf"), is(notNullValue()));  // Verifica se o UF está presente
 }
-Contribuições 🤝
+
+# Contribuições 🤝
 Este é um projeto open-source! Contribuições são bem-vindas. Para contribuir, siga os seguintes passos:
 
 1. Fork o repositório.
