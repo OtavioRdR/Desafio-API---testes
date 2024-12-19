@@ -52,15 +52,18 @@ Se você estiver usando Maven, execute o seguinte comando:
  ```
  mvn clean install
  ```
-Execute os testes:
+3. **Execute os testes:**
 
 Execute o comando abaixo para rodar os testes utilizando o JUnit 5:
-
-bash
+```
 mvn test
+```
+
 Se estiver usando uma IDE como IntelliJ ou Eclipse, você pode executar os testes diretamente pela interface da IDE.
 
-Estrutura do Projeto 🗂️
+## Estrutura do Projeto 🗂️
+```
+
 plaintext
 ├── src
 │   └── test
@@ -70,65 +73,69 @@ plaintext
 │                   └── desafioApi
 │                       └── ApiDeCep.java  <-- Arquivo de testes
 └── pom.xml  <-- Arquivo de configuração do Maven
-Explicação do Código 💻
-Teste de CEP Válido
-No teste cepEValido, o código verifica se a resposta da API para um CEP válido (exemplo: 18085847) retorna com o código de status 200 OK, o CEP correto e os campos de localidade e UF não nulos.
+```
 
-java
+
+# Explicação do Código 💻
+
+**Teste de CEP Válido**
+
+No teste cepEValido, o código verifica se a resposta da API para um CEP válido **(exemplo: 18085847)** retorna com o código de status 200 OK, o CEP correto e os campos de localidade e UF não nulos.
+
+**java**
+```
 @Test
-public void cepEValido() {
-    String valido = "18085847";
-    Response response = RestAssured
-            .given()
-            .get("https://viacep.com.br/ws/" + valido + "/json");
+    public void cepEValido(){
+        String valido = "18085847";
 
-    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
-    String cepRetorna = response.jsonPath().getString("cep").replace("-", "");
-    assertThat(cepRetorna, is(valido));  // Verifica se o CEP retornado é igual ao solicitado
-    assertThat(response.jsonPath().getString("localidade"), is(notNullValue()));  // Verifica se a localidade está presente
-    assertThat(response.jsonPath().getString("uf"), is(notNullValue()));  // Verifica se o UF está presente
+        Response response = RestAssured
+                .given()
+                .get("https://viacep.com.br/ws/" + valido + "/json");
+
+        assertThat(response.getStatusCode(), is(200));
+
+        String cepRetorna = response.jsonPath().getString("cep").replace("-", "");
+        assertThat(cepRetorna, is(valido));
+
+        assertThat(response.jsonPath().getString("localidade"), is(notNullValue()));
+        assertThat(response.jsonPath().getString("uf"), is(notNullValue()));
+
+        }
+```
+
+## Teste de CEP Inválido
+
+No teste testCepInvalido, a API é chamada com um CEP inválido **(00000000)** e é verificado se a resposta retorna o campo "erro": "true".
+
+**java**
+```
+ @Test
+    public void testCepInvalido(){
+        String cepInvalido = "00000000";
+
+        Response response = RestAssured
+                .given()
+                .get("https://viacep.com.br/ws/" + cepInvalido + "/json");
+
+        assertThat(response.getStatusCode(), is(200));
+
+        assertThat(response.jsonPath().getString("erro"), is("true"));
+
+    }
 }
-Teste de CEP Inválido
-No teste testCepInvalido, a API é chamada com um CEP inválido (00000000) e é verificado se a resposta retorna o campo "erro": "true".
-
-java
-@Test
-public void testCepInvalido() {
-    String cepInvalido = "00000000";
-    Response response = RestAssured
-            .given()
-            .get("https://viacep.com.br/ws/" + cepInvalido + "/json");
-
-    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
-    assertThat(response.jsonPath().getString("erro"), is("true"));  // Verifica se o erro é "true"
-}
-Teste de Tempo de Resposta
-No teste testTempoDeResposta, o tempo de resposta da API é verificado, garantindo que ele seja inferior a 2 segundos.
-
-java
-@Test
-public void testTempoDeResposta() {
-    String valido = "18085847";
-    Response response = RestAssured
-            .given()
-            .get("https://viacep.com.br/ws/" + valido + "/json");
-
-    assertThat(response.getStatusCode(), is(200));  // Verifica o status code 200
-    long tempoResposta = response.getTime();
-    assertTrue(tempoResposta < 2000);  // Verifica se o tempo de resposta é inferior a 2 segundos
-}
-Contribuições 🤝
+```
+# Contribuições 🤝
 Este é um projeto open-source! Contribuições são bem-vindas. Para contribuir, siga os seguintes passos:
 
-Fork o repositório.
+1. Fork o repositório.
 
-Crie uma branch para suas alterações (git checkout -b feature-nova).
+2. Crie uma branch para suas alterações (git checkout -b feature-nova).
 
-Faça commit das suas mudanças (git commit -am 'Adicionar nova feature').
+3. Faça commit das suas mudanças (git commit -am 'Adicionar nova feature').
 
-Envie suas alterações para o repositório remoto (git push origin feature-nova).
+4. Envie suas alterações para o repositório remoto (git push origin feature-nova).
 
-Abra um Pull Request para revisão.
+5. Abra um Pull Request para revisão.
 
 Licença 📜
 Distribuído sob a Licença MIT. Veja o arquivo LICENSE para mais informações.
