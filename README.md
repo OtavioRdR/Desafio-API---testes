@@ -46,12 +46,12 @@ Os seguintes cenários são cobertos pelos testes da API:
    ```bash
    git clone https://github.com/OtavioRdR/Desafio-API---testes
    cd desafio
-Instale as dependências:
+2. **Instale as dependências:**
 
 Se você estiver usando Maven, execute o seguinte comando:
-
-bash
-mvn clean install
+ ```
+ mvn clean install
+ ```
 Execute os testes:
 
 Execute o comando abaixo para rodar os testes utilizando o JUnit 5:
